@@ -1,40 +1,54 @@
 import simpleaudio
-from numpy.random import randint
-
+from random import randint
 from app.getch import getch
 
-NUMBER_OF_FILES = 2
+NUMBER_OF_FILES = 12
+MEDIA_FOLDER_PATH = "./media/"
 
+CODE_FILE_MAPPING = {
+    1: 'file10.wav',
+    2: 'file8.wav',
+    3: 'file3.wav',
+    5: 'file5.wav'
+}
 def play_test_sound():
-    simpleaudio.WaveObject.from_wave_file('./media/file1.wav').play()
+    simpleaudio.WaveObject.from_wave_file('./media/file10.wav').play()
 
-play_test_sound()
+def get_filename(code):
+    if code in CODE_FILE_MAPPING:
+        return CODE_FILE_MAPPING[code]
+    else:
+        file_number = randint(1, NUMBER_OF_FILES)
+        return 'file{}.wav'.format(file_number)
 
-print('press 0 to exit')
+def main():
+    play_test_sound()
+    while True:
+        ch = getch()
+        if not ch.isnumeric():
+            continue
 
-while True:
-    ch = getch()
-    print(ch, flush=True)
+        simpleaudio.stop_all()
+        code = int(ch)
+        filename = '{}{}'.format(MEDIA_FOLDER_PATH, get_filename(code))
+        simpleaudio.WaveObject.from_wave_file(filename).play()
 
-    if ch == '0':
-        exit()
-    if not ch.isnumeric():
-        continue
-    code = int(ch)
-
-    simpleaudio.stop_all()
-    file_number = randint(1, NUMBER_OF_FILES+1)
-    file_name = './media/file{}.wav'.format(file_number)
-    simpleaudio.WaveObject.from_wave_file(file_name).play()
-
-
+if __name__ == "__main__":
+    main()
 
 """
 play test sound on init
-display codes?
 keep waiting for button input
-on input
+on valid input
     kill any playing sound
-    pick a random file
+    get code
+    get a file based on code
     start playing sound asyncly
+
+9 - random files
+1 - shout siuu short file10.wav
+2 - question siu file8.wav
+3 - inshallah file3.wav
+5 - special ofcourse - file5.wav
+
 """
